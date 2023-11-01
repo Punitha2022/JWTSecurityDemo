@@ -39,7 +39,18 @@ public class CustomerController {
 	JWTTokenHelper jWTTokenHelper;
 	
 	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
 	private CustomerUserDetailsService userDetailsService;
+	
+	@PostMapping("/public/register")
+	public ResponseEntity<?> register(@RequestBody Customer customer){
+		customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+		customer=userDetailsService.registerCustomer(customer);
+		return new ResponseEntity<Customer>(customer,HttpStatus.OK);
+	}
+
 
 	@PostMapping("/public/login")
 	public ResponseEntity<?> login(@RequestBody LoginCredentials lc) 
